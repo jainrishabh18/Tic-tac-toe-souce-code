@@ -1,37 +1,152 @@
-## Welcome to GitHub Pages
+board=["-","-","-",
+       "-","-","-",
+       "-","-","-",]
+game_still_going = True
 
-You can use the [editor on GitHub](https://github.com/jainrishabh18/Tic-tac-toe-souce-code/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+winner = None
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+current_player = "X"
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+def display_board():
+    print(board[0] + "|" + board[1] + "|" + board[2])
+    print(board[3] + "|" + board[4] + "|" + board[5])
+    print(board[6] + "|" + board[7] + "|" + board[8])
 
-```markdown
-Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
+def handle_turn(player):
+    print(player,"'s turn")
+    position = input("enter number between 1 to 9:")
 
-- Bulleted
-- List
+    valid = False
+    while not valid:
+        #if statement to show that if wrong input is given then how to tackle it
+        while position not in ["1","2","3","4","5","6","7","8","9"]:
+            position = input("write valid input between 1-9:")
+        position = int(position) - 1
 
-1. Numbered
-2. List
 
-**Bold** and _Italic_ and `Code` text
+        if board[position] == "-":
+            valid = True
+        else:
+            print("play within rules of the game")
 
-[Link](url) and ![Image](src)
-```
+    board[position] = player
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+    display_board()
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/jainrishabh18/Tic-tac-toe-souce-code/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+def flip_player():
+    global current_player
 
-### Support or Contact
+    if current_player == "X":
+        current_player = "O"
+    elif current_player == "O":
+        current_player = "X"
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+    return
+
+
+def check_game_over():
+    #check_for_winner
+    #check_for_tie
+    check_for_winner()
+    check_for_tie()
+
+def check_for_winner():
+    global winner
+    row_winner = check_rows()
+
+    column_winner = check_columns()
+
+    diagnol_winner = check_diagnols()
+
+    if row_winner:
+        winner = row_winner
+    elif column_winner:
+        winner = column_winner
+    elif diagnol_winner:
+        winner = diagnol_winner
+    else:
+        winner= None
+    return
+
+def check_rows():
+
+    global game_still_going
+
+    row1 = board[0] == board[1] == board[2] != "-"
+    row2 = board[3] == board[4] == board[5] != "-"
+    row3 = board[6] == board[7] == board[8] != "-"
+
+    if row1 or row2 or row3:
+        game_still_going = False
+    if row1:
+        return board[0]
+    elif row2:
+        return board[3]
+    elif row3:
+        return board[6]
+    return
+
+
+def check_columns():
+
+    global game_still_going
+
+    column1 = board[0] == board[3] == board[6] != "-"
+    column2 = board[1] == board[4] == board[7] != "-"
+    column3 = board[2] == board[5] == board[8] != "-"
+
+    if column1 or column2 or column3:
+        game_still_going = False
+
+    if column1:
+        return board[0]
+    elif column2:
+        return board[1]
+    elif column3:
+        return board[2]
+    return
+
+def check_diagnols():
+
+    global game_still_going
+
+    diagnol1 = board[0] == board[4] == board[8] != "-"
+    diagnol2 = board[6] == board[4] == board[2] != "-"
+
+
+    if diagnol1 or diagnol2 :
+        game_still_going = False
+    if diagnol1:
+        return board[0]
+    elif diagnol2:
+        return board[2]
+    return
+
+def check_for_tie():
+    global game_still_going
+    if "-" not in board:
+        game_still_going = False
+    return
+
+
+
+
+def play_game():
+    display_board()
+    while game_still_going:
+        handle_turn(current_player)
+
+        check_game_over()
+
+        flip_player()
+
+
+play_game()
+
+if winner == "X" or winner == "O":
+    print( winner  + " won! ")
+elif winner == None:
+    print("Tie!")
